@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Mocks Example</title>
+    <link rel="stylesheet" href="mockstyle.css" />
+  </head>
+  <body>
+    <main class="container">
+      <div class="student-info">
+        <p>
+          <strong>
+            Student Full Name : Delaksan Sritharan<br />
+            Student ID : W2120777<br />
+            Module Name : Wed Design and Development
+          </strong>
+        </p>
+      </div>
+      <section class="input-section">
+        <label for="realName">Your Name</label>
+        <input type="text" id="realName" placeholder="Enter your real name" />
+
+        <label for="duckNickname">Your Name</label>
+        <input
+          type="text"
+          id="duckNickname"
+          placeholder="Enter duck nickname"
+        />
+        <div id="nicknameFeedback">System feedback</div>
+        <button id="generateNickname">Generate Funny Name</button>
+        <div class="duck-thumbnails">
+          <img src="duck1.jpg" class="duck-thumb" id="duck1" alt="Green Duck" />
+          <img
+            src="duck2.jpg"
+            class="duck-thumb"
+            id="duck2"
+            alt="slim red duck"
+          />
+          <img
+            src="duck3.jpg"
+            class="duck-thumb"
+            id="duck3"
+            alt="Round duck pink duck"
+          />
+        </div>
+        <button id="confirmSelection">Confirm</button>
+      </section>
+      <section class="summary-card">
+        <h1>Summary card</h1>
+        <div class="selected-duck-contaciner">
+          <img
+            id="selectedDuck"
+            class="selected-duck"
+            src="duck.jpg"
+            alt="selected duck"
+          />
+        </div>
+        <input
+          type="text"
+          id="finalNickname"
+          readonly
+          placeholder="combined name"
+        />
+      </section>
+    </main>
+    <script src="mockscript.js"></script>
+  </body>
+</html>

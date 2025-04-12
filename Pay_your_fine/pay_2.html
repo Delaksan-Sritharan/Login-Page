@@ -1,0 +1,902 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Payment Portal</title>
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.5/font/bootstrap-icons.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      /* Add your custom CSS here */
+      body {
+        background: linear-gradient(135deg, #0d1337 0%, #1a237e 100%);
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      }
+
+      .card {
+        border-radius: 15px;
+        border: none;
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+        overflow: hidden;
+        max-width: 800px;
+        width: 100%;
+        background: rgba(255, 255, 255, 0.9);
+        backdrop-filter: blur(5px);
+        margin: 2rem auto;
+      }
+
+      .card-header {
+        background: linear-gradient(135deg, #3f51b5 0%, #1a237e 100%);
+        color: white;
+        text-align: center;
+        padding: 25px;
+        border-bottom: none;
+      }
+
+      .payment-title {
+        margin: 0;
+        font-weight: 600;
+        letter-spacing: 1px;
+        font-size: 2rem;
+      }
+
+      .card-body {
+        padding: 40px;
+      }
+
+      .form-label {
+        font-weight: 500;
+        color: #333;
+        margin-bottom: 8px;
+      }
+
+      .form-control {
+        padding: 12px 15px;
+        border-radius: 8px;
+        border: 1px solid #ced4da;
+        background-color: #f8f9fa;
+        transition: all 0.3s;
+      }
+
+      .form-control:focus {
+        box-shadow: 0 0 0 3px rgba(63, 81, 181, 0.2);
+        border-color: #3f51b5;
+        background-color: #fff;
+      }
+
+      .btn-primary {
+        background: linear-gradient(135deg, #3f51b5 0%, #1a237e 100%);
+        border: none;
+        border-radius: 8px;
+        padding: 12px 20px;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s;
+      }
+
+      .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+        background: linear-gradient(135deg, #303f9f 0%, #0d1337 100%);
+      }
+
+      .payment-icons {
+        font-size: 28px;
+        color: #6c757d;
+        margin-right: 10px;
+      }
+
+      .credit-card-box {
+        perspective: 1000px;
+        max-width: 400px;
+        margin: 0 auto 30px;
+      }
+
+      .credit-card {
+        width: 100%;
+        height: 200px;
+        position: relative;
+        transform-style: preserve-3d;
+        transition: transform 0.6s;
+        border-radius: 15px;
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+      }
+
+      .credit-card.flipped {
+        transform: rotateY(180deg);
+      }
+
+      .credit-card-front,
+      .credit-card-back {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        backface-visibility: hidden;
+        border-radius: 15px;
+        padding: 20px;
+        background: linear-gradient(135deg, #3f51b5 0%, #1a237e 100%);
+        color: white;
+      }
+
+      .credit-card-back {
+        transform: rotateY(180deg);
+      }
+
+      .chip {
+        width: 50px;
+        height: 40px;
+        background: linear-gradient(135deg, #ddd 0%, #999 100%);
+        border-radius: 8px;
+        margin-bottom: 20px;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .chip::before {
+        content: "";
+        position: absolute;
+        left: 10px;
+        top: 10px;
+        width: 30px;
+        height: 20px;
+        background: linear-gradient(135deg, #bbb 0%, #777 100%);
+        border-radius: 4px;
+      }
+
+      .card-number {
+        font-size: 1.3rem;
+        letter-spacing: 3px;
+        margin-bottom: 20px;
+        font-family: monospace;
+      }
+
+      .card-holder,
+      .card-expiry {
+        font-size: 0.9rem;
+        text-transform: uppercase;
+      }
+
+      .card-stripe {
+        background-color: #000;
+        height: 40px;
+        margin-top: 20px;
+      }
+
+      .card-signature {
+        background-color: #fff;
+        height: 40px;
+        margin-top: 20px;
+        padding: 5px;
+        position: relative;
+      }
+
+      .card-cvv {
+        position: absolute;
+        right: 10px;
+        top: 10px;
+        color: #333;
+        font-family: monospace;
+        background: #eee;
+        padding: 2px 5px;
+        border-radius: 3px;
+      }
+
+      .user-profile {
+        position: relative;
+      }
+
+      .user-profile img {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        object-fit: cover;
+      }
+
+      /* Custom Navbar Styling */
+      :root {
+        --primary-color: #0d6efd;
+        --dark-color: #101828;
+        --transition-speed: 0.3s;
+      }
+
+      .navbar {
+        background-color: rgba(16, 24, 40, 0.95);
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        padding: 0.5rem 1rem;
+        transition: all var(--transition-speed) ease;
+      }
+
+      .navbar.scrolled {
+        padding: 0.3rem 1rem;
+        background-color: rgba(13, 17, 23, 0.98);
+      }
+
+      .navbar-brand {
+        display: flex;
+        align-items: center;
+        color: white;
+        font-weight: 600;
+        position: relative;
+        transition: transform var(--transition-speed) ease;
+      }
+
+      .navbar-brand:hover {
+        transform: translateX(3px);
+      }
+
+      .navbar-brand img {
+        margin-right: 8px;
+        transition: transform var(--transition-speed) ease;
+      }
+
+      .navbar-brand:hover img {
+        transform: rotate(15deg);
+      }
+
+      .navbar-brand span {
+        letter-spacing: 0.5px;
+        font-size: 0.95rem;
+      }
+
+      .navbar-nav .nav-link {
+        color: rgba(255, 255, 255, 0.7);
+        font-size: 0.9rem;
+        padding: 0.5rem 0.8rem;
+        margin: 0 2px;
+        border-radius: 4px;
+        transition: all var(--transition-speed) ease;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .navbar-nav .nav-link:before {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 0;
+        height: 2px;
+        background-color: var(--primary-color);
+        transition: width var(--transition-speed) ease;
+      }
+
+      .navbar-nav .nav-link:hover:before {
+        width: 75%;
+      }
+
+      .navbar-nav .nav-link:hover {
+        color: white;
+        background-color: rgba(255, 255, 255, 0.08);
+        transform: translateY(-2px);
+      }
+
+      .navbar-nav .nav-link.active {
+        color: white;
+        background-color: var(--primary-color);
+        box-shadow: 0 4px 8px rgba(13, 110, 253, 0.25);
+      }
+
+      .navbar-nav .nav-link.active:hover {
+        transform: translateY(-2px) scale(1.05);
+      }
+
+      .navbar-nav .nav-link i {
+        transition: transform var(--transition-speed) ease;
+        display: inline-block;
+        margin-right: 3px;
+      }
+
+      .navbar-nav .nav-link:hover i {
+        transform: translateY(-2px);
+      }
+
+      .navbar-toggler {
+        border: none;
+        color: white;
+        padding: 0.25rem 0.5rem;
+        transition: transform var(--transition-speed) ease;
+      }
+
+      .navbar-toggler:hover {
+        transform: rotate(90deg);
+      }
+
+      .navbar-toggler:focus {
+        box-shadow: none;
+      }
+
+      /* Profile Button */
+      .profile-button {
+        display: flex;
+        align-items: center;
+        background-color: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        color: white;
+        border-radius: 4px;
+        padding: 0.25rem 0.75rem;
+        font-size: 0.85rem;
+        transition: all var(--transition-speed) ease;
+        position: relative;
+        overflow: hidden;
+        z-index: 1;
+      }
+
+      .profile-button:before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(13, 110, 253, 0.3);
+        transition: all var(--transition-speed) ease;
+        z-index: -1;
+      }
+
+      .profile-button:hover:before {
+        left: 0;
+      }
+
+      .profile-button:hover {
+        background-color: rgba(255, 255, 255, 0.1);
+        border-color: rgba(255, 255, 255, 0.2);
+        transform: translateX(-3px);
+      }
+
+      .profile-button img {
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        margin-right: 8px;
+        transition: transform var(--transition-speed) ease;
+      }
+
+      .profile-button:hover img {
+        transform: scale(1.1);
+      }
+
+      /* Notification Badge */
+      .notification-badge {
+        position: relative;
+      }
+
+      .notification-badge::after {
+        content: "";
+        position: absolute;
+        top: 3px;
+        right: 3px;
+        width: 8px;
+        height: 8px;
+        background-color: #dc3545;
+        border-radius: 50%;
+        animation: pulse 1.5s infinite;
+      }
+
+      @keyframes pulse {
+        0% {
+          transform: scale(1);
+          opacity: 1;
+        }
+        50% {
+          transform: scale(1.3);
+          opacity: 0.7;
+        }
+        100% {
+          transform: scale(1);
+          opacity: 1;
+        }
+      }
+
+      /* Footer Styling */
+      footer {
+        background-color: rgba(16, 24, 40, 0.95);
+        color: rgba(255, 255, 255, 0.7);
+        padding: 1rem 0;
+        margin-top: auto;
+        font-size: 0.85rem;
+        position: relative;
+        overflow: hidden;
+      }
+
+      footer:before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 1px;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          var(--primary-color),
+          transparent
+        );
+      }
+
+      footer a {
+        color: rgba(255, 255, 255, 0.7);
+        text-decoration: none;
+        transition: color var(--transition-speed) ease;
+        position: relative;
+      }
+
+      footer a:after {
+        content: "";
+        position: absolute;
+        bottom: -2px;
+        left: 0;
+        width: 0;
+        height: 1px;
+        background-color: white;
+        transition: width var(--transition-speed) ease;
+      }
+
+      footer a:hover:after {
+        width: 100%;
+      }
+
+      footer a:hover {
+        color: white;
+        text-decoration: none;
+      }
+
+      /* Scroll progress */
+      .scroll-progress {
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 3px;
+        background-color: var(--primary-color);
+        width: 0%;
+        z-index: 1070;
+        transition: width 0.1s ease;
+      }
+
+      /* Toast Notification */
+      .toast-container {
+        position: fixed;
+        top: 80px;
+        right: 20px;
+        z-index: 1060;
+      }
+
+      .custom-toast {
+        background-color: rgba(16, 24, 40, 0.95);
+        color: white;
+        border: none;
+        border-left: 4px solid var(--primary-color);
+        border-radius: 4px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        max-width: 350px;
+        opacity: 0;
+        transform: translateX(50px);
+        transition: all var(--transition-speed) ease;
+      }
+
+      .custom-toast.show {
+        opacity: 1;
+        transform: translateX(0);
+      }
+
+      .main-content {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Scroll Progress Bar -->
+    <div class="scroll-progress" id="scrollProgress"></div>
+
+    <!-- Bootstrap Navbar -->
+    <nav class="navbar navbar-expand-lg sticky-top animate-nav" id="mainNav">
+      <div class="container">
+        <a class="navbar-brand" href="#" id="navbarBrand">
+          <img
+            th:src="@{/police_logo.jpg}"
+            alt="Police Badge"
+            width="28"
+            height="28"
+            id="navLogo"
+          />
+          <span>TRAFFIC PAYMENTS</span>
+        </a>
+
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
+        >
+          <i class="bi bi-list"></i>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav mx-auto">
+            <li class="nav-item">
+              <a class="nav-link active" th:href="@{/home}" id="homeLink">
+                <i class="bi bi-house-door"></i> Home
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" th:href="@{/fine}" id="findTicketLink">
+                <i class="bi bi-search"></i> Find Ticket
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" th:href="@{/payments}" id="paymentsLink">
+                <i class="bi bi-credit-card"></i> Payments
+              </a>
+            </li>
+          </ul>
+
+          <div class="d-flex">
+            <button class="profile-button" id="profileBtn">
+              <img
+                th:src="@{/Delaksan.png}"
+                alt="Profile Picture"
+                id="profilePic"
+              />
+              <span class="d-none d-sm-inline">Delaksan Sritharan</span>
+            </button>
+            <button
+              class="btn btn-link text-light notification-badge ms-2 px-2"
+              id="notificationBtn"
+            >
+              <i class="bi bi-bell-fill"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Toast Container -->
+    <div class="toast-container">
+      <div
+        class="toast custom-toast"
+        id="notificationToast"
+        role="alert"
+        aria-live="assertive"
+        aria-atomic="true"
+      >
+        <div class="toast-header">
+          <i class="bi bi-info-circle text-primary me-2"></i>
+          <strong class="me-auto">System Notification</strong>
+          <small>Just now</small>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="toast"
+            aria-label="Close"
+          ></button>
+        </div>
+        <div class="toast-body">Click to view details of Unpaid payments</div>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+      <div class="card">
+        <div class="card-header">
+          <h1 class="payment-title">Secure Payment</h1>
+        </div>
+        <div class="card-body">
+          <div class="credit-card-box mb-4">
+            <div class="credit-card" id="creditCard">
+              <div class="credit-card-front">
+                <div
+                  class="d-flex justify-content-between align-items-center mb-4"
+                >
+                  <div class="chip"></div>
+                  <div>
+                    <i class="fab fa-cc-visa fa-2x"></i>
+                  </div>
+                </div>
+                <div class="card-number" id="displayCardNumber">
+                  •••• •••• •••• ••••
+                </div>
+                <div class="d-flex justify-content-between">
+                  <div>
+                    <div
+                      class="text-uppercase mb-1"
+                      style="font-size: 0.7rem; opacity: 0.8"
+                    >
+                      Card Holder
+                    </div>
+                    <div class="card-holder" id="displayCardHolder">
+                      Your Name
+                    </div>
+                  </div>
+                  <div>
+                    <div
+                      class="text-uppercase mb-1"
+                      style="font-size: 0.7rem; opacity: 0.8"
+                    >
+                      Expires
+                    </div>
+                    <div class="card-expiry" id="displayCardExpiry">MM/YY</div>
+                  </div>
+                </div>
+              </div>
+              <div class="credit-card-back">
+                <div class="card-stripe"></div>
+                <div class="card-signature">
+                  <div class="card-cvv" id="displayCardCvv">•••</div>
+                </div>
+                <div class="mt-3 text-end">
+                  <i class="fab fa-cc-visa fa-2x"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="mb-4">
+            <div class="d-flex justify-content-center gap-3 mb-4">
+              <i class="fab fa-cc-visa payment-icons"></i>
+              <i class="fab fa-cc-mastercard payment-icons"></i>
+              <i class="fab fa-cc-amex payment-icons"></i>
+              <i class="fab fa-cc-discover payment-icons"></i>
+            </div>
+          </div>
+
+          <form id="paymentForm" th:action="@{/process-payment}" method="post">
+            <div class="mb-3">
+              <label for="cardNumber" class="form-label">Card Number</label>
+              <input
+                type="text"
+                class="form-control"
+                id="cardNumber"
+                name="cardNumber"
+                placeholder="1234 5678 9012 3456"
+                maxlength="19"
+                required
+              />
+            </div>
+
+            <div class="row mb-3">
+              <div class="col-md-6">
+                <label for="expiryDate" class="form-label">Expiry Date</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="expiryDate"
+                  name="expiryDate"
+                  placeholder="MM/YY"
+                  maxlength="5"
+                  required
+                />
+              </div>
+              <div class="col-md-6">
+                <label for="cvv" class="form-label">CVV/CVC</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="cvv"
+                  name="cvv"
+                  placeholder="123"
+                  maxlength="3"
+                  required
+                />
+              </div>
+            </div>
+
+            <div class="mb-4">
+              <label for="cardName" class="form-label">Name on Card</label>
+              <input
+                type="text"
+                class="form-control"
+                id="cardName"
+                name="cardName"
+                placeholder="John Doe"
+                required
+              />
+            </div>
+
+            <!-- Add the fine amount field -->
+            <div class="mb-3">
+              <label class="form-label">Amount to Pay</label>
+              <div class="form-control" th:text="${driver.fine}" readonly></div>
+              <input
+                type="hidden"
+                id="amount"
+                th:value="${driver.fine}"
+                name="amount"
+              />
+              <input
+                type="hidden"
+                name="driverLicenseNo"
+                th:value="${driver.driverLicenseNo}"
+              />
+            </div>
+
+            <div class="d-grid">
+              <button type="submit" class="btn btn-primary btn-lg">
+                Process Payment
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bootstrap Footer -->
+    <footer>
+      <div class="container">
+        <div class="row">
+          <div class="col-md-6">
+            <p class="mb-md-0">
+              &copy; 2025 Rights Owned by Delaksan. All Rights Reserved.
+            </p>
+          </div>
+          <div class="col-md-6">
+            <ul class="list-inline text-md-end mb-0">
+              <li class="list-inline-item">
+                <a href="#" id="termsLink">Terms of Service</a>
+              </li>
+              <li class="list-inline-item">|</li>
+              <li class="list-inline-item">
+                <a href="#" id="privacyLink">Privacy Policy</a>
+              </li>
+              <li class="list-inline-item">|</li>
+              <li class="list-inline-item">
+                <a href="#" id="contactLink">Contact</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+    <!-- Replace the existing script section with this corrected version -->
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const cardNumber = document.getElementById("cardNumber");
+        const expiryDate = document.getElementById("expiryDate");
+        const cvv = document.getElementById("cvv");
+        const cardName = document.getElementById("cardName");
+        const creditCard = document.getElementById("creditCard");
+        const paymentForm = document.getElementById("paymentForm");
+
+        const displayCardNumber = document.getElementById("displayCardNumber");
+        const displayCardHolder = document.getElementById("displayCardHolder");
+        const displayCardExpiry = document.getElementById("displayCardExpiry");
+        const displayCardCvv = document.getElementById("displayCardCvv");
+
+        // Format card number with spaces
+        cardNumber.addEventListener("input", function (e) {
+          let value = e.target.value.replace(/\D/g, "");
+          let formattedValue = "";
+
+          for (let i = 0; i < value.length; i++) {
+            if (i > 0 && i % 4 === 0) {
+              formattedValue += " ";
+            }
+            formattedValue += value[i];
+          }
+
+          e.target.value = formattedValue;
+          displayCardNumber.textContent =
+            formattedValue || "•••• •••• •••• ••••";
+        });
+
+        // Format expiry date
+        expiryDate.addEventListener("input", function (e) {
+          let value = e.target.value.replace(/\D/g, "");
+          let formattedValue = "";
+
+          if (value.length > 0) {
+            formattedValue = value.slice(0, 2);
+            if (value.length > 2) {
+              formattedValue += "/" + value.slice(2, 4);
+            }
+          }
+
+          e.target.value = formattedValue;
+          displayCardExpiry.textContent = formattedValue || "MM/YY";
+        });
+
+        // Update card holder name
+        cardName.addEventListener("input", function (e) {
+          displayCardHolder.textContent = e.target.value || "YOUR NAME";
+        });
+
+        // Flip card when focusing on CVV
+        cvv.addEventListener("focus", function () {
+          creditCard.classList.add("flipped");
+        });
+
+        cvv.addEventListener("blur", function () {
+          creditCard.classList.remove("flipped");
+        });
+
+        // Update CVV on card
+        cvv.addEventListener("input", function (e) {
+          let value = e.target.value.replace(/\D/g, "");
+          e.target.value = value;
+          displayCardCvv.textContent = value || "•••";
+        });
+
+        // Handle form submission
+        paymentForm.addEventListener("submit", function (e) {
+          // Validate form
+          let isValid = true;
+
+          if (cardNumber.value.replace(/\s/g, "").length < 16) {
+            cardNumber.classList.add("is-invalid");
+            isValid = false;
+          } else {
+            cardNumber.classList.remove("is-invalid");
+          }
+
+          if (expiryDate.value.length < 5) {
+            expiryDate.classList.add("is-invalid");
+            isValid = false;
+          } else {
+            expiryDate.classList.remove("is-invalid");
+          }
+
+          if (cvv.value.length < 3) {
+            cvv.classList.add("is-invalid");
+            isValid = false;
+          } else {
+            cvv.classList.remove("is-invalid");
+          }
+
+          if (cardName.value.trim() === "") {
+            cardName.classList.add("is-invalid");
+            isValid = false;
+          } else {
+            cardName.classList.remove("is-invalid");
+          }
+
+          if (!isValid) {
+            e.preventDefault();
+          }
+          // If valid, the form will submit normally to the server
+        });
+
+        // Add scroll progress functionality
+        window.addEventListener("scroll", function () {
+          const scrollTop =
+            document.documentElement.scrollTop || document.body.scrollTop;
+          const scrollHeight =
+            document.documentElement.scrollHeight -
+            document.documentElement.clientHeight;
+          const scrollProgress = (scrollTop / scrollHeight) * 100;
+
+          document.getElementById("scrollProgress").style.width =
+            scrollProgress + "%";
+        });
+
+        // Notification functionality
+        const notificationBtn = document.getElementById("notificationBtn");
+        const notificationToast = new bootstrap.Toast(
+          document.getElementById("notificationToast")
+        );
+
+        notificationBtn.addEventListener("click", function () {
+          notificationToast.show();
+        });
+      });
+    </script>
+  </body>
+</html>

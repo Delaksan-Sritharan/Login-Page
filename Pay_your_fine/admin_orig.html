@@ -1,0 +1,768 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Panel - Manage Fines</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    //Navigation Bar
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="#">Admin Panel</a>
+      </div>
+    </nav>
+
+    <div class="container mt-4">
+      <h2 class="text-center text-primary">Manage Drivers & Police</h2>
+
+      <ul class="nav nav-tabs" id="adminTabs">
+        <li class="nav-item">
+          <a
+            class="nav-link active"
+            id="drivers-tab"
+            data-bs-toggle="tab"
+            href="#drivers"
+            >Drivers</a
+          >
+        </li>
+        <li class="nav-item">
+          <a
+            class="nav-link"
+            id="police-tab"
+            data-bs-toggle="tab"
+            href="#police"
+            >Police</a
+          >
+        </li>
+      </ul>
+
+      <div class="tab-content mt-4">
+        <!-- Driver Management Section -->
+        <div id="drivers" class="tab-pane fade show active">
+          <h4>Driver Management</h4>
+
+          <!-- Add/Update Driver Form -->
+          <form id="driverForm">
+            <input type="hidden" id="driverId" />
+            <div class="mb-3">
+              <label for="driverLicenseNo" class="form-label"
+                >Driver License No:</label
+              >
+              <input
+                type="text"
+                id="driverLicenseNo"
+                class="form-control"
+                required
+              />
+            </div>
+            <div class="mb-3">
+              <label for="driverName" class="form-label">Name:</label>
+              <input
+                type="text"
+                id="driverName"
+                class="form-control"
+                required
+              />
+            </div>
+            <div class="mb-3">
+              <label for="driverOffence" class="form-label">Offence:</label>
+              <input
+                type="text"
+                id="driverOffence"
+                class="form-control"
+                required
+              />
+            </div>
+            <div class="mb-3">
+              <label for="email" class="form-label">email:</label>
+              <input type="text" id="email" class="form-control" required />
+            </div>
+            <div class="mb-3">
+              <label for="fine" class="form-label">fine:</label>
+              <input type="text" id="fine" class="form-control" required />
+            </div>
+            <div class="mb-3">
+              <label for="fine_date" class="form-label">fine date:</label>
+              <input type="text" id="fine_date" class="form-control" required />
+            </div>
+            <div class="mb-3">
+              <label for="fine_due_date" class="form-label"
+                >fine due date:</label
+              >
+              <input
+                type="text"
+                id="fine_due_date"
+                class="form-control"
+                required
+              />
+            </div>
+            <div class="mb-3">
+              <label for="location" class="form-label">location:</label>
+              <input type="text" id="location" class="form-control" required />
+            </div>
+            <div class="mb-3">
+              <label for="mobile_number" class="form-label"
+                >mobile number:</label
+              >
+              <input
+                type="text"
+                id="mobile_number"
+                class="form-control"
+                required
+              />
+            </div>
+            <div class="mb-3">
+              <label for="police_id" class="form-label">police id:</label>
+              <input type="text" id="police_id" class="form-control" required />
+            </div>
+            <div class="mb-3">
+              <label for="status" class="form-label">status:</label>
+              <input type="text" id="status" class="form-control" required />
+            </div>
+            <button type="submit" class="btn btn-primary">Save Driver</button>
+          </form>
+
+          <hr />
+
+          <!-- Driver List -->
+          <h5>Registered Drivers</h5>
+          <table class="table table-bordered">
+            <thead>
+              <tr>
+                <th>License No</th>
+                <th>Name</th>
+                <th>Offence</th>
+                <th>Email</th>
+                <th>Mobile Number</th>
+                <th>Fine</th>
+                <th>Fine Date</th>
+                <th>Fine Due Date</th>
+                <th>Location</th>
+                <th>Police ID</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="driverTableBody"></tbody>
+          </table>
+        </div>
+
+        <!-- Police Management Section -->
+        <div id="police" class="tab-pane fade">
+          <h4>Police Management</h4>
+          <!-- Add/Update Police Form -->
+          <!--      <form id="policeForm">-->
+          <!--        <input type="hidden" id="policeId">-->
+          <!--        <div class="mb-3">-->
+          <!--          <label for="policeId" class="form-label">Police ID:</label>-->
+          <!--          <input type="text" id="policeId" class="form-control" required>-->
+          <!--        </div>-->
+          <!--        <div class="mb-3">-->
+          <!--          <label for="policeName" class="form-label">Police Name:</label>-->
+          <!--          <input type="text" id="policeName" class="form-control" required>-->
+          <!--        </div>-->
+          <!--        <div class="mb-3">-->
+          <!--          <label for="policeLocation" class="form-label">Location:</label>-->
+          <!--          <input type="text" id="policeLocation" class="form-control" required>-->
+          <!--        </div>-->
+          <!--        <button type="submit" class="btn btn-primary">Save Police</button>-->
+          <!--      </form>-->
+          <!-- Police Form -->
+          <form id="policeForm">
+            <div class="mb-3">
+              <label for="policeIdInput" class="form-label">Police ID:</label>
+              <input
+                type="text"
+                id="policeIdInput"
+                class="form-control"
+                required
+              />
+            </div>
+            <div class="mb-3">
+              <label for="policeName" class="form-label">Police Name:</label>
+              <input
+                type="text"
+                id="policeName"
+                class="form-control"
+                required
+              />
+            </div>
+            <div class="mb-3">
+              <label for="policeLocation" class="form-label">Location:</label>
+              <input
+                type="text"
+                id="policeLocation"
+                class="form-control"
+                required
+              />
+            </div>
+            <div class="mb-3">
+              <label for="policePassword" class="form-label">Password:</label>
+              <input
+                type="password"
+                id="policePassword"
+                class="form-control"
+                required
+              />
+            </div>
+            <input type="hidden" id="policeRole" value="POLICE" />
+            <button type="submit" class="btn btn-primary">Save Police</button>
+          </form>
+
+          <hr />
+
+          <!-- Police List -->
+          <h5>Registered Police Officers</h5>
+          <table class="table table-bordered">
+            <thead>
+              <tr>
+                <th>Police ID</th>
+                <th>Name</th>
+                <th>Location</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="policeTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        loadDrivers();
+        loadPolice();
+
+        // Handle driver form submission
+        document
+          .getElementById("driverForm")
+          .addEventListener("submit", function (event) {
+            event.preventDefault();
+            saveDriver();
+          });
+
+        // // Handle police form submission
+        // document.getElementById("policeForm").addEventListener("submit", function (event) {
+        //   event.preventDefault();
+        //   savePolice();
+        // });
+        // Add submit handler to police form
+        document
+          .getElementById("policeForm")
+          .addEventListener("submit", savePolice);
+      });
+
+      // function loadDrivers() {
+      //   fetch("/drivers")
+      //           .then(response => response.json())
+      //           .then(data => {
+      //             const driverTable = document.getElementById("driverTableBody");
+      //             driverTable.innerHTML = "";
+      //             data.forEach(driver => {
+      //               driverTable.innerHTML += `
+      //         <tr>
+      //           <td>${driver.driverLicenseNo}</td>
+      //           <td>${driver.name}</td>
+      //           <td>${driver.offence}</td>
+      //           <td>${driver.email || ''}</td>
+      //           <td>${driver.mobile_number || ''}</td>
+      //           <td>${driver.fine || ''}</td>
+      //           <td>${driver.fine_date || ''}</td>
+      //           <td>${driver.fine_due_date || ''}</td>
+      //           <td>${driver.location || ''}</td>
+      //           <td>${driver.police_id || ''}</td>
+      //           <td>${driver.status || ''}</td>
+      //           <td>
+      //             <button class="btn btn-warning btn-sm" onclick="editDriver('${driver.driverLicenseNo}')">Edit</button>
+      //             <button class="btn btn-danger btn-sm" onclick="deleteDriver('${driver.driverLicenseNo}')">Delete</button>
+      //           </td>
+      //         </tr>`;
+      //             });
+      //           })
+      //           .catch(error => console.error("Error loading drivers:", error));
+      // }
+      function loadDrivers() {
+        fetch("/drivers")
+          .then((response) => response.json())
+          .then((data) => {
+            const driverTable = document.getElementById("driverTableBody");
+            driverTable.innerHTML = "";
+            data.forEach((driver) => {
+              driverTable.innerHTML += `
+          <tr>
+            <td>${driver.driverLicenseNo}</td>
+            <td>${driver.name}</td>
+            <td>${driver.offence}</td>
+            <td>${driver.email || ""}</td>
+            <td>${driver.mobileNumber || ""}</td>
+            <td>${driver.fine || ""}</td>
+            <td>${driver.fineDate || ""}</td>
+            <td>${driver.fineDueDate || ""}</td>
+            <td>${driver.location || ""}</td>
+            <td>${driver.policeId || ""}</td>
+            <td>${driver.status || ""}</td>
+            <td>
+              <button class="btn btn-warning btn-sm" onclick="editDriver('${
+                driver.driverLicenseNo
+              }')">Edit</button>
+              <button class="btn btn-danger btn-sm" onclick="deleteDriver('${
+                driver.driverLicenseNo
+              }')">Delete</button>
+            </td>
+          </tr>`;
+            });
+          })
+          .catch((error) => console.error("Error loading drivers:", error));
+      }
+
+      // function saveDriver() {
+      //   const driver = {
+      //     driverLicenseNo: document.getElementById("driverLicenseNo").value,
+      //     name: document.getElementById("driverName").value,
+      //     offence: document.getElementById("driverOffence").value,
+      //     email: document.getElementById("email").value,
+      //     fine: document.getElementById("fine").value,
+      //     fine_date: document.getElementById("fine_date").value,
+      //     fine_due_date: document.getElementById("fine_due_date").value,
+      //     location: document.getElementById("location").value,
+      //     mobile_number: document.getElementById("mobile_number").value,
+      //     police_id: document.getElementById("police_id").value,
+      //     status: document.getElementById("status").value
+      //   };
+      //
+      //   fetch("/drivers", {
+      //     method: "POST",
+      //     headers: { "Content-Type": "application/json" },
+      //     body: JSON.stringify(driver)
+      //   })
+      //           .then(response => response.json())
+      //           .then(() => {
+      //             loadDrivers();
+      //             document.getElementById("driverForm").reset();
+      //           })
+      //           .catch(error => console.error("Error saving driver:", error));
+      // }
+
+      function saveDriver() {
+        const driver = {
+          driverLicenseNo: document.getElementById("driverLicenseNo").value,
+          name: document.getElementById("driverName").value,
+          offence: document.getElementById("driverOffence").value,
+          email: document.getElementById("email").value,
+          fine: document.getElementById("fine").value,
+          fineDate: document.getElementById("fine_date").value, // Changed field name
+          fineDueDate: document.getElementById("fine_due_date").value, // Changed field name
+          location: document.getElementById("location").value,
+          mobileNumber: document.getElementById("mobile_number").value, // Changed field name
+          policeId: document.getElementById("police_id").value, // Changed field name
+          status: document.getElementById("status").value,
+        };
+
+        fetch("/drivers", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(driver),
+        })
+          .then((response) => response.json())
+          .then(() => {
+            loadDrivers();
+            document.getElementById("driverForm").reset();
+          })
+          .catch((error) => console.error("Error saving driver:", error));
+      }
+
+      // function editDriver(driverLicenseNo) {
+      //   fetch(`/drivers/${driverLicenseNo}`)
+      //           .then(response => response.json())
+      //           .then(driver => {
+      //             document.getElementById("driverLicenseNo").value = driver.driverLicenseNo;
+      //             document.getElementById("driverName").value = driver.name;
+      //             document.getElementById("driverOffence").value = driver.offence;
+      //             document.getElementById("email").value = driver.email || '';
+      //             document.getElementById("fine").value = driver.fine || '';
+      //             document.getElementById("fine_date").value = driver.fine_date || '';
+      //             document.getElementById("fine_due_date").value = driver.fine_due_date || '';
+      //             document.getElementById("location").value = driver.location || '';
+      //             document.getElementById("mobile_number").value = driver.mobile_number || '';
+      //             document.getElementById("police_id").value = driver.police_id || '';
+      //             document.getElementById("status").value = driver.status || '';
+      //
+      //             document.getElementById("driverLicenseNo").disabled = true;
+      //             document.querySelector("#driverForm button").textContent = "Update Driver";
+      //
+      //             document.getElementById("driverForm").onsubmit = function(event) {
+      //               event.preventDefault();
+      //               updateDriver(driverLicenseNo);
+      //             };
+      //           })
+      //           .catch(error => console.error("Error fetching driver:", error));
+      // }
+      function editDriver(driverLicenseNo) {
+        fetch(`/drivers/${driverLicenseNo}`) // Fixed template literal syntax
+          .then((response) => response.json())
+          .then((driver) => {
+            document.getElementById("driverLicenseNo").value =
+              driver.driverLicenseNo;
+            document.getElementById("driverName").value = driver.name;
+            document.getElementById("driverOffence").value = driver.offence;
+            document.getElementById("email").value = driver.email || "";
+            document.getElementById("fine").value = driver.fine || "";
+            document.getElementById("fine_date").value = driver.fineDate || ""; // Changed field name
+            document.getElementById("fine_due_date").value =
+              driver.fineDueDate || ""; // Changed field name
+            document.getElementById("location").value = driver.location || "";
+            document.getElementById("mobile_number").value =
+              driver.mobileNumber || ""; // Changed field name
+            document.getElementById("police_id").value = driver.policeId || ""; // Changed field name
+            document.getElementById("status").value = driver.status || "";
+
+            document.getElementById("driverLicenseNo").disabled = true;
+            document.querySelector("#driverForm button").textContent =
+              "Update Driver";
+          })
+          .catch((error) => console.error("Error fetching driver:", error));
+      }
+
+      // function updateDriver(driverLicenseNo) {
+      //   const updatedDriver = {
+      //     driverLicenseNo: driverLicenseNo,
+      //     name: document.getElementById("driverName").value,
+      //     offence: document.getElementById("driverOffence").value,
+      //     email: document.getElementById("email").value,
+      //     fine: document.getElementById("fine").value,
+      //     fine_date: document.getElementById("fine_date").value,
+      //     fine_due_date: document.getElementById("fine_due_date").value,
+      //     location: document.getElementById("location").value,
+      //     mobile_number: document.getElementById("mobile_number").value,
+      //     police_id: document.getElementById("police_id").value,
+      //     status: document.getElementById("status").value
+      //   };
+      //
+      //   fetch(`/drivers/${driverLicenseNo}`, {
+      //     method: "PUT",
+      //     headers: { "Content-Type": "application/json" },
+      //     body: JSON.stringify(updatedDriver)
+      //   })
+      //           .then(response => response.json())
+      //           .then(() => {
+      //             loadDrivers();
+      //             document.getElementById("driverForm").reset();
+      //             document.getElementById("driverLicenseNo").disabled = false;
+      //             document.querySelector("#driverForm button").textContent = "Save Driver";
+      //             document.getElementById("driverForm").onsubmit = function(event) {
+      //               event.preventDefault();
+      //               saveDriver();
+      //             };
+      //           })
+      //           .catch(error => console.error("Error updating driver:", error));
+      // }
+      function updateDriver(driverLicenseNo) {
+        const updatedDriver = {
+          driverLicenseNo: driverLicenseNo,
+          name: document.getElementById("driverName").value,
+          offence: document.getElementById("driverOffence").value,
+          email: document.getElementById("email").value,
+          fine: document.getElementById("fine").value,
+          fineDate: document.getElementById("fine_date").value, // Changed field name
+          fineDueDate: document.getElementById("fine_due_date").value, // Changed field name
+          location: document.getElementById("location").value,
+          mobileNumber: document.getElementById("mobile_number").value, // Changed field name
+          policeId: document.getElementById("police_id").value, // Changed field name
+          status: document.getElementById("status").value,
+        };
+
+        fetch(`/drivers/${driverLicenseNo}`, {
+          // Fixed template literal syntax
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(updatedDriver),
+        })
+          .then((response) => response.json())
+          .then(() => {
+            loadDrivers();
+            document.getElementById("driverForm").reset();
+            document.getElementById("driverLicenseNo").disabled = false;
+            document.querySelector("#driverForm button").textContent =
+              "Save Driver";
+            document.getElementById("driverForm").onsubmit = function (event) {
+              event.preventDefault();
+              saveDriver();
+            };
+          })
+          .catch((error) => console.error("Error updating driver:", error));
+      }
+
+      function deleteDriver(driverLicenseNo) {
+        fetch(`/drivers/${driverLicenseNo}`, { method: "DELETE" })
+          .then(() => loadDrivers()) // Reload the table after deletion
+          .catch((error) => console.error("Error deleting driver:", error));
+      }
+
+      // // Load Police
+      // function loadPolice() {
+      //   fetch("/api/police")
+      //           .then(response => response.json())
+      //           .then(data => {
+      //             const policeTable = document.getElementById("policeTableBody");
+      //             policeTable.innerHTML = "";
+      //             data.forEach(police => {
+      //               policeTable.innerHTML += `
+      //                   <tr>
+      //                       <td>${police.policeId}</td>
+      //                       <td>${police.policeName}</td>
+      //                       <td>${police.location}</td>
+      //                       <td>
+      //                           <button class="btn btn-warning btn-sm" onclick="editPolice('${police.policeId}')">Edit</button>
+      //                           <button class="btn btn-danger btn-sm" onclick="deletePolice('${police.policeId}')">Delete</button>
+      //                       </td>
+      //                   </tr>`;
+      //             });
+      //           });
+      // }
+      // Load Police
+      function loadPolice() {
+        fetch("/api/police")
+          .then((response) => response.json())
+          .then((data) => {
+            const policeTable = document.getElementById("policeTableBody");
+            policeTable.innerHTML = "";
+            data.forEach((police) => {
+              policeTable.innerHTML += `
+                    <tr>
+                        <td>${police.policeId || ""}</td>
+                        <td>${police.policeName || ""}</td>
+                        <td>${police.location || ""}</td>
+                        <td>
+                            <button class="btn btn-warning btn-sm" onclick="editPolice('${
+                              police.policeId
+                            }')">Edit</button>
+                            <button class="btn btn-danger btn-sm" onclick="deletePolice('${
+                              police.policeId
+                            }')">Delete</button>
+                        </td>
+                    </tr>`;
+            });
+          })
+          .catch((error) => console.error("Error loading police:", error));
+      }
+
+      // // Save Police
+      // function savePolice() {
+      //   const police = {
+      //     policeId: document.getElementById("policeId").value,
+      //     policeName: document.getElementById("policeName").value,
+      //     location: document.getElementById("policeLocation").value
+      //   };
+      //
+      //   fetch("/api/police", {
+      //     method: "POST",
+      //     headers: { "Content-Type": "application/json" },
+      //     body: JSON.stringify(police)
+      //   }).then(() => loadPolice());
+      // }
+      // Save Police
+      function savePolice(event) {
+        event.preventDefault();
+
+        const police = {
+          policeId: document.getElementById("policeIdInput").value, // Changed from policeId
+          policeName: document.getElementById("policeName").value,
+          location: document.getElementById("policeLocation").value,
+          password: document.getElementById("policePassword").value,
+          role: "POLICE", // Always set this
+        };
+
+        fetch("/api/police", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(police),
+        })
+          .then((response) => response.json())
+          .then(() => {
+            loadPolice();
+            document.getElementById("policeForm").reset();
+          })
+          .catch((error) => console.error("Error saving police:", error));
+      }
+
+      // // Delete Police
+      // function deletePolice(policeId) {
+      //   fetch(`/api/police/${policeId}`, { method: "DELETE" })
+      //           .then(() => loadPolice());
+      // }
+      // Delete Police
+      function deletePolice(policeId) {
+        if (confirm("Are you sure you want to delete this police officer?")) {
+          fetch(`/api/police/${policeId}`, {
+            method: "DELETE",
+          })
+            .then((response) => {
+              if (!response.ok) {
+                throw new Error("Network response was not ok");
+              }
+              loadPolice();
+            })
+            .catch((error) => {
+              console.error("Error deleting police:", error);
+              alert("Error deleting police. Check console for details.");
+            });
+        }
+      }
+
+      function editDriver(driverLicenseNo) {
+        fetch(`/drivers/${driverLicenseNo}`)
+          .then((response) => response.json())
+          .then((driver) => {
+            document.getElementById("driverLicenseNo").value =
+              driver.driverLicenseNo;
+            document.getElementById("driverName").value = driver.name;
+            document.getElementById("driverOffence").value = driver.offence;
+
+            // Disable License No input to prevent modification (Optional)
+            document.getElementById("driverLicenseNo").disabled = true;
+
+            // Change button text to "Update"
+            document.querySelector("#driverForm button").textContent =
+              "Update Driver";
+
+            // Attach event listener for updating the driver
+            document.getElementById("driverForm").onsubmit = function (event) {
+              event.preventDefault();
+              updateDriver(driverLicenseNo);
+            };
+          })
+          .catch((error) => console.error("Error fetching driver:", error));
+      }
+
+      function updateDriver(driverLicenseNo) {
+        const updatedDriver = {
+          name: document.getElementById("driverName").value,
+          offence: document.getElementById("driverOffence").value,
+        };
+
+        fetch(`/drivers/${driverLicenseNo}`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(updatedDriver),
+        })
+          .then((response) => response.json())
+          .then(() => {
+            loadDrivers();
+            document.getElementById("driverForm").reset();
+            document.getElementById("driverLicenseNo").disabled = false;
+            document.querySelector("#driverForm button").textContent =
+              "Save Driver";
+            document.getElementById("driverForm").onsubmit = saveDriver; // Reset to normal save
+          })
+          .catch((error) => console.error("Error updating driver:", error));
+      }
+
+      // function editPolice(policeId) {
+      //   fetch(`/api/police/${policeId}`)
+      //           .then(response => response.json())
+      //           .then(police => {
+      //             document.getElementById("policeId").value = police.policeId;
+      //             document.getElementById("policeName").value = police.policeName;
+      //             document.getElementById("policeLocation").value = police.location;
+      //
+      //             // Disable Police ID input (Optional)
+      //             document.getElementById("policeId").disabled = true;
+      //
+      //             // Change button text to "Update"
+      //             document.querySelector("#policeForm button").textContent = "Update Police";
+      //
+      //             // Attach event listener for updating
+      //             document.getElementById("policeForm").onsubmit = function (event) {
+      //               event.preventDefault();
+      //               updatePolice(policeId);
+      //             };
+      //           })
+      //           .catch(error => console.error("Error fetching police:", error));
+      // }
+      // Edit Police
+      function editPolice(policeId) {
+        fetch(`/api/police/${policeId}`)
+          .then((response) => response.json())
+          .then((police) => {
+            // Store the original ID in a hidden field or data attribute
+            document.getElementById("policeIdInput").value = police.policeId;
+            document.getElementById("policeName").value = police.policeName;
+            document.getElementById("policeLocation").value = police.location;
+
+            // Change button text
+            document.querySelector("#policeForm button").textContent =
+              "Update Police";
+
+            // Change form submission handler
+            document.getElementById("policeForm").onsubmit = function (event) {
+              event.preventDefault();
+              updatePolice(police.policeId); // Pass the original ID
+            };
+          })
+          .catch((error) => console.error("Error fetching police:", error));
+      }
+      // function updatePolice(policeId) {
+      //   const updatedPolice = {
+      //     policeName: document.getElementById("policeName").value,
+      //     location: document.getElementById("policeLocation").value
+      //   };
+      //
+      //   fetch(`/api/police/${policeId}`, {
+      //     method: "PUT",
+      //     headers: { "Content-Type": "application/json" },
+      //     body: JSON.stringify(updatedPolice)
+      //   })
+      //           .then(response => response.json())
+      //           .then(() => {
+      //             loadPolice();
+      //             document.getElementById("policeForm").reset();
+      //             document.getElementById("policeId").disabled = false;
+      //             document.querySelector("#policeForm button").textContent = "Save Police";
+      //             document.getElementById("policeForm").onsubmit = savePolice; // Reset to normal save
+      //           })
+      //           .catch(error => console.error("Error updating police:", error));
+      // }
+      // Update Police
+      function updatePolice(originalId) {
+        const updatedPolice = {
+          policeId: document.getElementById("policeIdInput").value,
+          policeName: document.getElementById("policeName").value,
+          location: document.getElementById("policeLocation").value,
+        };
+
+        fetch(`/api/police/${originalId}`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(updatedPolice),
+        })
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error("Update failed");
+            }
+            return response.json();
+          })
+          .then(() => {
+            loadPolice();
+            document.getElementById("policeForm").reset();
+            document.querySelector("#policeForm button").textContent =
+              "Save Police";
+            document.getElementById("policeForm").onsubmit = savePolice;
+          })
+          .catch((error) => {
+            console.error("Error updating police:", error);
+            alert(
+              "Failed to update police officer. Please check the console for details."
+            );
+          });
+      }
+    </script>
+  </body>
+</html>

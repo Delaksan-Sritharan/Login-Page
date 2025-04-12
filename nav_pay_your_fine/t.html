@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Beautiful Interactive Navigation</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      }
+
+      body {
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        background-color: #f0f0f0;
+        overflow-x: hidden;
+      }
+
+      /* Navigation Bar */
+      .navbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.8rem 2rem;
+        background-color: rgba(0, 0, 0, 0.85);
+        backdrop-filter: blur(15px);
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+        border-radius: 0 0 20px 20px;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+        transition: all 0.3s ease;
+      }
+
+      .navbar:hover {
+        padding: 1rem 2.2rem;
+        background-color: rgba(0, 0, 0, 0.9);
+      }
+
+      .logo {
+        display: flex;
+        align-items: center;
+        transition: transform 0.3s ease;
+      }
+
+      .logo:hover {
+        transform: scale(1.05);
+      }
+
+      .logo img {
+        height: 40px;
+      }
+
+      .nav-links {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        flex-grow: 1;
+        background-color: rgba(255, 255, 255, 0.1);
+        padding: 0.5rem;
+        border-radius: 16px;
+        margin: 0 1rem;
+      }
+
+      .nav-item {
+        position: relative;
+        padding: 0.7rem 1.5rem;
+        border-radius: 12px;
+        transition: all 0.3s ease;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-decoration: none;
+        color: #999;
+        font-weight: 500;
+        font-size: 0.9rem;
+      }
+
+      .nav-item:hover {
+        background-color: rgba(255, 255, 255, 0.1);
+        color: white;
+        transform: translateY(-2px);
+      }
+
+      .nav-item.active {
+        background-color: #6c5ce7;
+        color: white;
+        box-shadow: 0 4px 15px rgba(108, 92, 231, 0.5);
+      }
+
+      .nav-icon {
+        font-size: 1.3rem;
+        margin-bottom: 0.3rem;
+      }
+
+      .profile {
+        display: flex;
+        align-items: center;
+        gap: 0.8rem;
+        color: white;
+        padding: 0.5rem 1rem;
+        border-radius: 12px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      .profile:hover {
+        background-color: rgba(255, 255, 255, 0.1);
+        transform: translateX(-5px);
+      }
+
+      .profile-pic {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 2px solid rgba(255, 255, 255, 0.5);
+        transition: all 0.3s ease;
+      }
+
+      .profile:hover .profile-pic {
+        border-color: #6c5ce7;
+        transform: scale(1.1);
+      }
+
+      .profile-name {
+        font-weight: 500;
+      }
+
+      /* Main Content Area */
+      main {
+        flex-grow: 1;
+        padding: 2rem;
+      }
+
+      /* Footer */
+      footer {
+        background-color: rgba(0, 0, 0, 0.85);
+        color: white;
+        text-align: center;
+        padding: 1.5rem;
+        margin-top: auto;
+        border-radius: 20px 20px 0 0;
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.1);
+      }
+
+      footer::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 2px;
+        background: linear-gradient(90deg, transparent, #6c5ce7, transparent);
+        animation: animate 4s linear infinite;
+      }
+
+      @keyframes animate {
+        0% {
+          left: -100%;
+        }
+        50% {
+          left: 100%;
+        }
+        100% {
+          left: 100%;
+        }
+      }
+
+      .footer-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 2rem;
+      }
+
+      .footer-logo {
+        font-weight: bold;
+        font-size: 1.2rem;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .footer-logo span {
+        color: #6c5ce7;
+      }
+
+      .footer-links {
+        display: flex;
+        gap: 1.5rem;
+      }
+
+      .footer-links a {
+        color: #ccc;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        position: relative;
+      }
+
+      .footer-links a::after {
+        content: "";
+        position: absolute;
+        width: 0;
+        height: 2px;
+        bottom: -5px;
+        left: 0;
+        background-color: #6c5ce7;
+        transition: width 0.3s ease;
+      }
+
+      .footer-links a:hover {
+        color: #fff;
+      }
+
+      .footer-links a:hover::after {
+        width: 100%;
+      }
+
+      .footer-copyright {
+        margin-top: 1rem;
+        font-size: 0.9rem;
+        color: #888;
+        letter-spacing: 1px;
+      }
+
+      /* Mobile Menu Button */
+      .mobile-menu-btn {
+        display: none;
+        background: none;
+        border: none;
+        color: white;
+        font-size: 1.5rem;
+        cursor: pointer;
+      }
+
+      /* Responsive Design */
+      @media (max-width: 768px) {
+        .navbar {
+          padding: 1rem;
+        }
+
+        .nav-links {
+          position: fixed;
+          bottom: 0;
+          left: 0;
+          right: 0;
+          background-color: rgba(0, 0, 0, 0.9);
+          border-radius: 16px 16px 0 0;
+          padding: 1rem 0.5rem;
+          margin: 0;
+          z-index: 1001;
+          transform: translateY(0);
+          transition: transform 0.3s ease;
+        }
+
+        .nav-links.hidden {
+          transform: translateY(100%);
+        }
+
+        .mobile-menu-btn {
+          display: block;
+        }
+
+        .profile-name {
+          display: none;
+        }
+
+        .footer-content {
+          flex-direction: column;
+          gap: 1rem;
+          text-align: center;
+        }
+
+        .footer-links {
+          margin: 1rem 0;
+        }
+      }
+    </style>
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        // Make navigation items interactive
+        const navItems = document.querySelectorAll(".nav-item");
+
+        navItems.forEach((item) => {
+          item.addEventListener("click", function () {
+            // Remove active class from all items
+            navItems.forEach((i) => i.classList.remove("active"));
+
+            // Add active class to clicked item
+            this.classList.add("active");
+          });
+        });
+
+        // Mobile menu toggle
+        const mobileMenuBtn = document.querySelector(".mobile-menu-btn");
+        const navLinks = document.querySelector(".nav-links");
+
+        if (mobileMenuBtn) {
+          mobileMenuBtn.addEventListener("click", function () {
+            navLinks.classList.toggle("hidden");
+          });
+        }
+
+        // Add hover effect to navbar
+        const navbar = document.querySelector(".navbar");
+
+        window.addEventListener("scroll", function () {
+          if (window.scrollY > 50) {
+            navbar.style.backgroundColor = "rgba(0, 0, 0, 0.95)";
+            navbar.style.padding = "0.6rem 2rem";
+          } else {
+            navbar.style.backgroundColor = "rgba(0, 0, 0, 0.85)";
+            navbar.style.padding = "0.8rem 2rem";
+          }
+        });
+      });
+    </script>
+  </head>
+  <body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+      <div class="logo">
+        <img src="/api/placeholder/150/50" alt="Delaksan Logo" />
+      </div>
+
+      <div class="nav-links">
+        <a href="#" class="nav-item active">
+          <div class="nav-icon">🏠</div>
+          Home
+        </a>
+        <a href="#" class="nav-item">
+          <div class="nav-icon">🔍</div>
+          Find
+        </a>
+        <a href="#" class="nav-item">
+          <div class="nav-icon">💰</div>
+          Payments
+        </a>
+      </div>
+
+      <div class="profile">
+        <img
+          src="/api/placeholder/40/40"
+          alt="Profile Picture"
+          class="profile-pic"
+        />
+        <span class="profile-name">John Doe</span>
+      </div>
+
+      <button class="mobile-menu-btn">☰</button>
+    </nav>
+
+    <!-- Main Content Area -->
+    <main>
+      <h1>Your Content Goes Here</h1>
+      <p>This is a placeholder for your main content.</p>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+      <div class="footer-content">
+        <div class="footer-logo">
+          <img src="/api/placeholder/30/30" alt="Delaksan Logo Small" />
+          DELAK<span>SAN</span>
+        </div>
+
+        <div class="footer-links">
+          <a href="#">About Us</a>
+          <a href="#">Services</a>
+          <a href="#">Contact</a>
+          <a href="#">Terms</a>
+          <a href="#">Privacy</a>
+        </div>
+      </div>
+
+      <div class="footer-copyright">
+        <p>&copy; 2025 Rights Owned by Delaksan. All Rights Reserved.</p>
+      </div>
+    </footer>
+  </body>
+</html>

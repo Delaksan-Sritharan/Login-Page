@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Police Traffic Payment System</title>
+    <!-- Bootstrap CSS from CDN -->
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <!-- Bootstrap Icons -->
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.11.1/font/bootstrap-icons.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --primary-color: #0d6efd;
+        --dark-color: #101828;
+        --transition-speed: 0.3s;
+      }
+
+      body {
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        background-color: #f8f9fa;
+        overflow-x: hidden;
+      }
+
+      /* Custom Navbar Styling */
+      .navbar {
+        background-color: rgba(16, 24, 40, 0.95);
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        padding: 0.5rem 1rem;
+        transition: all var(--transition-speed) ease;
+      }
+
+      .navbar.scrolled {
+        padding: 0.3rem 1rem;
+        background-color: rgba(13, 17, 23, 0.98);
+      }
+
+      .navbar-brand {
+        display: flex;
+        align-items: center;
+        color: white;
+        font-weight: 600;
+        position: relative;
+        transition: transform var(--transition-speed) ease;
+      }
+
+      .navbar-brand:hover {
+        transform: translateX(3px);
+      }
+
+      .navbar-brand img {
+        margin-right: 8px;
+        transition: transform var(--transition-speed) ease;
+      }
+
+      .navbar-brand:hover img {
+        transform: rotate(15deg);
+      }
+
+      .navbar-brand span {
+        letter-spacing: 0.5px;
+        font-size: 0.95rem;
+      }
+
+      .navbar-nav .nav-link {
+        color: rgba(255, 255, 255, 0.7);
+        font-size: 0.9rem;
+        padding: 0.5rem 0.8rem;
+        margin: 0 2px;
+        border-radius: 4px;
+        transition: all var(--transition-speed) ease;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .navbar-nav .nav-link:before {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 0;
+        height: 2px;
+        background-color: var(--primary-color);
+        transition: width var(--transition-speed) ease;
+      }
+
+      .navbar-nav .nav-link:hover:before {
+        width: 75%;
+      }
+
+      .navbar-nav .nav-link:hover {
+        color: white;
+        background-color: rgba(255, 255, 255, 0.08);
+        transform: translateY(-2px);
+      }
+
+      .navbar-nav .nav-link.active {
+        color: white;
+        background-color: var(--primary-color);
+        box-shadow: 0 4px 8px rgba(13, 110, 253, 0.25);
+      }
+
+      .navbar-nav .nav-link.active:hover {
+        transform: translateY(-2px) scale(1.05);
+      }
+
+      .navbar-nav .nav-link i {
+        transition: transform var(--transition-speed) ease;
+        display: inline-block;
+        margin-right: 3px;
+      }
+
+      .navbar-nav .nav-link:hover i {
+        transform: translateY(-2px);
+      }
+
+      .navbar-toggler {
+        border: none;
+        color: white;
+        padding: 0.25rem 0.5rem;
+        transition: transform var(--transition-speed) ease;
+      }
+
+      .navbar-toggler:hover {
+        transform: rotate(90deg);
+      }
+
+      .navbar-toggler:focus {
+        box-shadow: none;
+      }
+
+      /* Profile Button */
+      .profile-button {
+        display: flex;
+        align-items: center;
+        background-color: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        color: white;
+        border-radius: 4px;
+        padding: 0.25rem 0.75rem;
+        font-size: 0.85rem;
+        transition: all var(--transition-speed) ease;
+        position: relative;
+        overflow: hidden;
+        z-index: 1;
+      }
+
+      .profile-button:before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(13, 110, 253, 0.3);
+        transition: all var(--transition-speed) ease;
+        z-index: -1;
+      }
+
+      .profile-button:hover:before {
+        left: 0;
+      }
+
+      .profile-button:hover {
+        background-color: rgba(255, 255, 255, 0.1);
+        border-color: rgba(255, 255, 255, 0.2);
+        transform: translateX(-3px);
+      }
+
+      .profile-button img {
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        margin-right: 8px;
+        transition: transform var(--transition-speed) ease;
+      }
+
+      .profile-button:hover img {
+        transform: scale(1.1);
+      }
+
+      /* Notification Badge */
+      .notification-badge {
+        position: relative;
+      }
+
+      .notification-badge::after {
+        content: "";
+        position: absolute;
+        top: 3px;
+        right: 3px;
+        width: 8px;
+        height: 8px;
+        background-color: #dc3545;
+        border-radius: 50%;
+        animation: pulse 1.5s infinite;
+      }
+
+      @keyframes pulse {
+        0% {
+          transform: scale(1);
+          opacity: 1;
+        }
+        50% {
+          transform: scale(1.3);
+          opacity: 0.7;
+        }
+        100% {
+          transform: scale(1);
+          opacity: 1;
+        }
+      }
+
+      /* Footer Styling */
+      footer {
+        background-color: rgba(16, 24, 40, 0.95);
+        color: rgba(255, 255, 255, 0.7);
+        padding: 1rem 0;
+        margin-top: auto;
+        font-size: 0.85rem;
+        position: relative;
+        overflow: hidden;
+      }
+
+      footer:before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 1px;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          var(--primary-color),
+          transparent
+        );
+      }
+
+      footer a {
+        color: rgba(255, 255, 255, 0.7);
+        text-decoration: none;
+        transition: color var(--transition-speed) ease;
+        position: relative;
+      }
+
+      footer a:after {
+        content: "";
+        position: absolute;
+        bottom: -2px;
+        left: 0;
+        width: 0;
+        height: 1px;
+        background-color: white;
+        transition: width var(--transition-speed) ease;
+      }
+
+      footer a:hover:after {
+        width: 100%;
+      }
+
+      footer a:hover {
+        color: white;
+        text-decoration: none;
+      }
+
+      /* Main Content Area */
+      main {
+        flex: 1;
+        padding: 2rem 0;
+      }
+
+      /* Dropdown Menu */
+      .dropdown-menu {
+        background-color: rgba(16, 24, 40, 0.95);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+        padding: 0.5rem;
+        margin-top: 8px;
+        transform: translateY(10px);
+        opacity: 0;
+        visibility: hidden;
+        transition: all var(--transition-speed) ease;
+      }
+
+      .dropdown-menu.show {
+        transform: translateY(0);
+        opacity: 1;
+        visibility: visible;
+      }
+
+      .dropdown-item {
+        color: rgba(255, 255, 255, 0.7);
+        padding: 0.5rem 1rem;
+        border-radius: 4px;
+        transition: all 0.2s ease;
+        font-size: 0.9rem;
+      }
+
+      .dropdown-item:hover {
+        background-color: rgba(255, 255, 255, 0.1);
+        color: white;
+        transform: translateX(3px);
+      }
+
+      /* Toast Notification */
+      .toast-container {
+        position: fixed;
+        top: 80px;
+        right: 20px;
+        z-index: 1060;
+      }
+
+      .custom-toast {
+        background-color: rgba(16, 24, 40, 0.95);
+        color: white;
+        border: none;
+        border-left: 4px solid var(--primary-color);
+        border-radius: 4px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        max-width: 350px;
+        opacity: 0;
+        transform: translateX(50px);
+        transition: all var(--transition-speed) ease;
+      }
+
+      .custom-toast.show {
+        opacity: 1;
+        transform: translateX(0);
+      }
+
+      /* Animations */
+      @keyframes slideInDown {
+        from {
+          transform: translateY(-20px);
+          opacity: 0;
+        }
+        to {
+          transform: translateY(0);
+          opacity: 1;
+        }
+      }
+
+      .animate-nav {
+        animation: slideInDown 0.5s ease forwards;
+      }
+
+      /* Progress bar */
+      .scroll-progress {
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 3px;
+        background-color: var(--primary-color);
+        width: 0%;
+        z-index: 1070;
+        transition: width 0.1s ease;
+      }
+
+      /* Loading overlay */
+      .loading-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(16, 24, 40, 0.95);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 2000;
+        transition: opacity 0.5s ease;
+      }
+
+      .spinner-border {
+        width: 3rem;
+        height: 3rem;
+      }
+
+      /* Quick Action Buttons */
+      .quick-actions {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 20px;
+      }
+
+      .quick-action-btn {
+        border-radius: 8px;
+        transition: all var(--transition-speed) ease;
+        overflow: hidden;
+        position: relative;
+      }
+
+      .quick-action-btn:after {
+        content: "";
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: -100%;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(255, 255, 255, 0.2),
+          transparent
+        );
+        transition: all 0.5s ease;
+      }
+
+      .quick-action-btn:hover:after {
+        left: 100%;
+      }
+
+      .quick-action-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+    </div>
+
+    <!-- Scroll Progress Bar -->
+    <div class="scroll-progress" id="scrollProgress"></div>
+
+    <!-- Bootstrap Navbar -->
+    <nav class="navbar navbar-expand-lg sticky-top animate-nav" id="mainNav">
+      <div class="container">
+        <a class="navbar-brand" href="#" id="navbarBrand">
+          <img
+            src="/api/placeholder/28/28"
+            alt="Police Badge"
+            width="28"
+            height="28"
+            id="navLogo"
+          />
+          <span>TRAFFIC PAYMENTS</span>
+        </a>
+
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
+        >
+          <i class="bi bi-list"></i>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav mx-auto">
+            <li class="nav-item">
+              <a class="nav-link active" href="#" id="homeLink">
+                <i class="bi bi-house-door"></i> Home
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#" id="findTicketLink">
+                <i class="bi bi-search"></i> Find Ticket
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#" id="paymentsLink">
+                <i class="bi bi-credit-card"></i> Payments
+              </a>
+            </li>
+          </ul>
+
+          <div class="d-flex">
+            <button class="profile-button" id="profileBtn">
+              <img
+                src="/api/placeholder/24/24"
+                alt="Profile Picture"
+                id="profilePic"
+              />
+              <span class="d-none d-sm-inline">My Account</span>
+            </button>
+            <button
+              class="btn btn-link text-light notification-badge ms-2 px-2"
+              id="notificationBtn"
+            >
+              <i class="bi bi-bell-fill"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Toast Container -->
+    <div class="toast-container">
+      <div
+        class="toast custom-toast"
+        id="notificationToast"
+        role="alert"
+        aria-live="assertive"
+        aria-atomic="true"
+      >
+        <div class="toast-header">
+          <i class="bi bi-info-circle text-primary me-2"></i>
+          <strong class="me-auto">System Notification</strong>
+          <small>Just now</small>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="toast"
+            aria-label="Close"
+          ></button>
+        </div>
+        <div class="toast-body">Click to view details of Unpaid payments</div>
+      </div>
+    </div>
+
+    <!-- Bootstrap Footer -->
+    <footer>
+      <div class="container">
+        <div class="row">
+          <div class="col-md-6">
+            <p class="mb-md-0">
+              &copy; 2025 Rights Owned by Delaksan. All Rights Reserved.
+            </p>
+          </div>
+          <div class="col-md-6">
+            <ul class="list-inline text-md-end mb-0">
+              <li class="list-inline-item">
+                <a href="#" id="termsLink">Terms of Service</a>
+              </li>
+              <li class="list-inline-item">|</li>
+              <li class="list-inline-item">
+                <a href="#" id="privacyLink">Privacy Policy</a>
+              </li>
+              <li class="list-inline-item">|</li>
+              <li class="list-inline-item">
+                <a href="#" id="contactLink">Contact</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <!-- Bootstrap JS Bundle with Popper -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        // Simulate loading
+        setTimeout(function () {
+          const overlay = document.getElementById("loadingOverlay");
+          overlay.style.opacity = "0";
+          setTimeout(() => {
+            overlay.style.display = "none";
+          }, 0);
+        }, 0);
+
+        // Scroll progress bar
+        window.addEventListener("scroll", function () {
+          const winScroll =
+            document.body.scrollTop || document.documentElement.scrollTop;
+          const height =
+            document.documentElement.scrollHeight -
+            document.documentElement.clientHeight;
+          const scrolled = (winScroll / height) * 100;
+          document.getElementById("scrollProgress").style.width =
+            scrolled + "%";
+
+          // Change navbar on scroll
+          if (winScroll > 50) {
+            document.getElementById("mainNav").classList.add("scrolled");
+          } else {
+            document.getElementById("mainNav").classList.remove("scrolled");
+          }
+        });
+
+        // Navigation link active state
+        const navLinks = document.querySelectorAll(".nav-link");
+        navLinks.forEach((link) => {
+          link.addEventListener("click", function (e) {
+            if (!this.classList.contains("dropdown-toggle")) {
+              e.preventDefault();
+              navLinks.forEach((l) => l.classList.remove("active"));
+              this.classList.add("active");
+
+              // Update main card content based on clicked link
+              const cardTitle = document.querySelector(".card-title");
+              const cardText = document.querySelector(".card-text");
+
+              if (this.id === "homeLink") {
+                cardTitle.textContent = "Welcome to the Traffic Payment Portal";
+                cardText.textContent =
+                  "Pay your traffic fines easily and securely. Use the quick action buttons above or navigate using the menu.";
+              } else if (this.id === "findTicketLink") {
+                cardTitle.textContent = "Find Your Ticket";
+                cardText.textContent =
+                  "Enter your ticket number, license plate, or driver's license to locate your violations.";
+              } else if (this.id === "paymentsLink") {
+                cardTitle.textContent = "Payment Options";
+                cardText.textContent =
+                  "Choose from multiple payment methods including credit card, bank transfer, or mobile payment.";
+              }
+            }
+          });
+        });
+
+        // Show notification toast on notification button click
+        const notificationBtn = document.getElementById("notificationBtn");
+        notificationBtn.addEventListener("click", function () {
+          const toast = document.getElementById("notificationToast");
+          const bsToast = new bootstrap.Toast(toast);
+          bsToast.show();
+        });
+
+        // Profile button interaction
+        const profileBtn = document.getElementById("profileBtn");
+        const profilePic = document.getElementById("profilePic");
+
+        profileBtn.addEventListener("click", function () {
+          profilePic.style.transform = "scale(1.2)";
+          setTimeout(() => {
+            profilePic.style.transform = "";
+          }, 300);
+
+          // Show a notification that would take you to profile in a real app
+          const toast = document.getElementById("notificationToast");
+          toast.querySelector(".toast-header strong").textContent = "Account";
+          toast.querySelector(".toast-body").textContent =
+            "Accessing your account profile...";
+          const bsToast = new bootstrap.Toast(toast);
+          bsToast.show();
+        });
+
+        // Quick action buttons
+        const quickActions = document.querySelectorAll(".quick-action-btn");
+        quickActions.forEach((btn) => {
+          btn.addEventListener("click", function () {
+            const toast = document.getElementById("notificationToast");
+            toast.querySelector(".toast-header strong").textContent =
+              "Action Selected";
+
+            if (this.id === "quickPayBtn") {
+              toast.querySelector(".toast-body").textContent =
+                "Processing quick payment...";
+            } else if (this.id === "lookupBtn") {
+              toast.querySelector(".toast-body").textContent =
+                "Opening ticket lookup...";
+            } else if (this.id === "historyBtn") {
+              toast.querySelector(".toast-body").textContent =
+                "Loading payment history...";
+            }
+
+            const bsToast = new bootstrap.Toast(toast);
+            bsToast.show();
+          });
+        });
+
+        // Logo animation
+        const navLogo = document.getElementById("navLogo");
+        navLogo.addEventListener("click", function (e) {
+          e.preventDefault();
+          this.style.transform = "rotate(360deg)";
+          setTimeout(() => {
+            this.style.transform = "";
+          }, 500);
+        });
+
+        // Footer links interaction
+        const footerLinks = document.querySelectorAll("footer a");
+        footerLinks.forEach((link) => {
+          link.addEventListener("click", function (e) {
+            e.preventDefault();
+            const toast = document.getElementById("notificationToast");
+            toast.querySelector(".toast-header strong").textContent =
+              "Navigation";
+            toast.querySelector(
+              ".toast-body"
+            ).textContent = `Navigating to ${this.textContent}...`;
+            const bsToast = new bootstrap.Toast(toast);
+            bsToast.show();
+          });
+        });
+      });
+    </script>
+  </body>
+</html>
